@@ -47,12 +47,25 @@ class _GroupsAndEventsState extends State<GroupsAndEvents> {
         return Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height*.25,
-                  child: ListView(
+                  child: (!snapshot.hasData)?
+                  Center(child: CircularProgressIndicator())
+                      :
+                  (snapshot.data.docs.isEmpty) ?
+                  Center(child: Text('Join an Event'))
+                      :
+                  ListView(
                     scrollDirection: Axis.horizontal,
                     children: GroupsAndEventsListWidget(snapshot),
                   ),
-                ),
-        );
+
+
+
+
+
+
+
+
+                );
 
       },
     );
