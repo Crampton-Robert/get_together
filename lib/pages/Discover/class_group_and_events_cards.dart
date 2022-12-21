@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:get_together/pages/Discover/make_or_edit_card.dart';
 import 'package:get_together/pages/Profile Page/profile_page.dart';
@@ -18,6 +19,12 @@ import 'package:get_together/pages/Profile Page/profile_page.dart';
   List<Widget> eventsListWidget(AsyncSnapshot snapshot){
     return snapshot.data.docs.map<Widget>((docs){
 
+      String documentId = docs.id.toString();
+      String user = "124";
+      String resultUid = documentId.substring(0, documentId.indexOf('+'));
+
+
+
       return Card(
         elevation: 8,
         shape: RoundedRectangleBorder(
@@ -32,13 +39,44 @@ import 'package:get_together/pages/Profile Page/profile_page.dart';
 
             Padding(
               padding: const EdgeInsets.all(25.0),
-              child: Text("docs['title']",),
+              child: Text(docs['description'],),
             ),
-            ButtonBar(
-              children: [
-                TextButton(onPressed: (){}, child: Text("Join"))
-              ],
-            )
+            //  final user = FirebaseAuth.instance.currentUser!.uid;
+     (user == resultUid) ?
+                  TextButton(onPressed: (){
+                    showCupertinoDialog(
+                      context: context,
+                      builder: (context) =>  CupertinoAlertDialog(
+                        title: Text("This Will Completely Delete Your Event"),
+                        actions: [
+                          CupertinoDialogAction(child: Text("Accept"),
+                            onPressed: (){
+                            FirebaseStorage.instance.ref().child(documentId).delete();
+                          FirebaseFirestore.instance.collection('Events').doc(documentId).delete();
+                          Navigator.pop(context);
+                          },
+                    ),
+                          CupertinoDialogAction(
+                            child: Text("Cancel"), onPressed: (){Navigator.pop(context);},),
+                        ],
+                      ),
+                    );
+
+                  }, child: Text("Delete")) :
+      TextButton(onPressed: (){
+        FirebaseFirestore.instance.collection('Events').doc(documentId).update({"JoinedUsers": FieldValue.arrayUnion([user])});
+      }, child: Text("Join"))
+
+            /*:
+         TextButton(onPressed: () {
+           FirebaseFirestore.instance.collection('Events')
+               .doc(documentId)
+               .update({"JoinedUsers": FieldValue.arrayRemove([user])});
+           setState(() {});
+         }, child: Text("Joined")),*/
+
+
+
           ],
         ),
       );

@@ -14,7 +14,6 @@ class _GroupsAndEventsState extends State<GroupsAndEvents> {
 
   List<Widget> GroupsAndEventsListWidget(AsyncSnapshot snapshot){
     return snapshot.data.docs.map<Widget>((docs){
-
       return Container(
         width: MediaQuery.of(context).size.width * 0.4,
         height: MediaQuery.of(context).size.height,
