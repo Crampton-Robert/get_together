@@ -20,7 +20,7 @@ import 'package:get_together/pages/Profile Page/profile_page.dart';
     return snapshot.data.docs.map<Widget>((docs){
 
       String documentId = docs.id.toString();
-      String user = "124";
+      String user = "123";
       String resultUid = documentId.substring(0, documentId.indexOf('+'));
 
 

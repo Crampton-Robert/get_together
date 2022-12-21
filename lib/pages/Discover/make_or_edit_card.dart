@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get_together/pages/Discover/make_or_edit_card.dart';
+import 'package:flutter/cupertino.dart';
 
 class MakeOrEditCards extends StatefulWidget {
 
@@ -41,13 +42,20 @@ class _MakeOrEditCardsState extends State<MakeOrEditCards> {
       ),
       body: ListView(
         children: [
-        TextField(
+       Padding(
+         padding: EdgeInsets.all(16.0),
+         child:
+         TextField(
             controller: title,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Title',
             ),
           ),
+    ),
+    Padding(
+    padding: EdgeInsets.all(16.0),
+    child:
          TextField(
             controller: description,
             decoration: InputDecoration(
@@ -55,12 +63,14 @@ class _MakeOrEditCardsState extends State<MakeOrEditCards> {
               labelText: 'Description',
             ),
           ),
+    ),
           ButtonBar(
             children: [
               TextButton(
                 onPressed: () {
+                 if (title.text.isNotEmpty && title.text.isNotEmpty){
               //  final user = FirebaseAuth.instance.currentUser!.uid;
-                  final user = "123";
+                  String user = "123";
                   Navigator.pop(context);
                   Map <String, dynamic> data = {
                  // 'CreatedBy': user.uid,
@@ -70,7 +80,11 @@ class _MakeOrEditCardsState extends State<MakeOrEditCards> {
                     "JoinedUsers": 0,
                   };
                   FirebaseFirestore.instance.collection('Events').doc(user+'+'+timestamp.toString()).set(data);
-                },
+                }else{
+                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                   Null;}
+
+                  },
                 child: const Text('Save'),),
           TextButton(
           onPressed: () {
