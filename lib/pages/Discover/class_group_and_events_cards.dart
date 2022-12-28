@@ -17,13 +17,13 @@ import 'package:get_together/pages/Profile Page/profile_page.dart';
   class _GroupAndEventsCardsState extends State<GroupAndEventsCards> {
 
   List<Widget> eventsListWidget(AsyncSnapshot snapshot){
-    return snapshot.data.docs.map<Widget>((docs){
-
+    return snapshot.data.docs.map<Widget>((docs) {
       String documentId = docs.id.toString();
-      String user = "123";
+      String user = "124";
       String resultUid = documentId.substring(0, documentId.indexOf('+'));
 
-
+      print(docs["JoinedUsers"]);
+      List joined = docs["JoinedUsers"];
 
       return Card(
         elevation: 8,
@@ -62,18 +62,16 @@ import 'package:get_together/pages/Profile Page/profile_page.dart';
                       ),
                     );
 
-                  }, child: Text("Delete")) :
+                  }, child: Text("Delete")) : (joined.contains(user) != true) ?
       TextButton(onPressed: (){
         FirebaseFirestore.instance.collection('Events').doc(documentId).update({"JoinedUsers": FieldValue.arrayUnion([user])});
-      }, child: Text("Join"))
+      }, child: Text("Join")) :
 
-            /*:
          TextButton(onPressed: () {
            FirebaseFirestore.instance.collection('Events')
                .doc(documentId)
                .update({"JoinedUsers": FieldValue.arrayRemove([user])});
-           setState(() {});
-         }, child: Text("Joined")),*/
+         }, child: Text("Joined")),
 
 
 
@@ -89,6 +87,7 @@ import 'package:get_together/pages/Profile Page/profile_page.dart';
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('Events').orderBy('createdAt', descending: true).snapshots(),
       builder: (context, AsyncSnapshot snapshot){
+
         return  (!snapshot.hasData)? Center(child: CircularProgressIndicator()) : (snapshot.data.docs.isEmpty) ? Center(child: Text('Be The First to Post an Event in your Area!'))
             : ListView(
           children: eventsListWidget(snapshot),

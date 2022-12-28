@@ -15,6 +15,7 @@ class _MakeOrEditCardsState extends State<MakeOrEditCards> {
 
 
   @override
+
   Widget build(BuildContext context) {
 
     final title = TextEditingController();
@@ -77,7 +78,7 @@ class _MakeOrEditCardsState extends State<MakeOrEditCards> {
                     "title":title.text,
                     "description": description.text,
                     "createdAt": timestamp,
-                    "JoinedUsers": 0,
+                    "JoinedUsers": [null],
                   };
                   FirebaseFirestore.instance.collection('Events').doc(user+'+'+timestamp.toString()).set(data);
                 }else{
