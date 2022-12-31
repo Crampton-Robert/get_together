@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:get_together/pages/Discover/make_or_edit_card.dart';
 import 'package:flutter/cupertino.dart';
 
-class MakeOrEditCards extends StatefulWidget {
+class MakeOrEditEvents extends StatefulWidget {
 
   @override
-  State<MakeOrEditCards> createState() => _MakeOrEditCardsState();
+  State<MakeOrEditEvents> createState() => _MakeOrEditEventsState();
 }
 
-class _MakeOrEditCardsState extends State<MakeOrEditCards> {
+class _MakeOrEditEventsState extends State<MakeOrEditEvents> {
 
 
   @override
@@ -69,12 +69,12 @@ class _MakeOrEditCardsState extends State<MakeOrEditCards> {
             children: [
               TextButton(
                 onPressed: () {
-                 if (title.text.isNotEmpty && title.text.isNotEmpty){
+                 if (title.text.isNotEmpty && description.text.isNotEmpty){
               //  final user = FirebaseAuth.instance.currentUser!.uid;
                   String user = "123";
                   Navigator.pop(context);
                   Map <String, dynamic> data = {
-                 // 'CreatedBy': user.uid,
+                    'CreatedBy': user,
                     "title":title.text,
                     "description": description.text,
                     "createdAt": timestamp,

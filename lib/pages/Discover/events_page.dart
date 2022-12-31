@@ -4,8 +4,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get_together/pages/Discover/make_or_edit_card.dart';
+import 'package:get_together/pages/Discover/make_or_edit_groups.dart';
 import 'package:get_together/pages/Profile Page/profile_page.dart';
-import 'package:get_together/pages/Discover/class_group_and_events_cards.dart';
+import 'package:get_together/pages/Discover/class_events_cards.dart';
+import 'package:get_together/pages/Discover/class_groups_cards.dart';
 
 class EventsCardList extends StatefulWidget {
   @override
@@ -13,10 +15,10 @@ class EventsCardList extends StatefulWidget {
 }
 
 class _EventsCardListState extends State<EventsCardList> {
-
+  bool isEvents = true;
+  bool isEventsSelected = true;
   @override
   Widget build(BuildContext context) {
-
         return Scaffold(
           appBar: AppBar(
             actions: <Widget>[
@@ -36,12 +38,41 @@ class _EventsCardListState extends State<EventsCardList> {
             ],
             title: const Text('Discover'),
           ),
-          body: GroupAndEventsCards(),
+          body: Column(
+            children:[
+              Container(
+                height: MediaQuery.of(context).size.height*.05,
+                child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+               Expanded(child: TextButton(onPressed: (){
+                  setState(() {
+                    isEvents = true;
+                    isEventsSelected = true;
+                  });
+                }, child: Text("Events"),
+                style: TextButton.styleFrom(backgroundColor: isEventsSelected ? Colors.lightBlue[800] : null),),
+               ),
+               Expanded(child: TextButton(onPressed: (){
+
+                    setState(() {
+                      isEvents = false;
+                      isEventsSelected = false;
+                    });
+                }, child: Text("Groups"),
+                  style: TextButton.styleFrom(backgroundColor: isEventsSelected ?  null : Colors.lightBlue[800]),
+                ),
+               ),
+              ],),),
+
+         Expanded(child: (isEvents) ? EventsCards() : GroupsCards(),),
+],
+          ),
         floatingActionButton: FloatingActionButton(
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => MakeOrEditCards()
+                MaterialPageRoute(builder: (context) => isEventsSelected ? MakeOrEditCards() : MakeOrEditGroups(),
                 ),
               );
             },
@@ -49,6 +80,5 @@ class _EventsCardListState extends State<EventsCardList> {
             child: const Icon(Icons.navigation),
           ),
         );
-
   }
 }

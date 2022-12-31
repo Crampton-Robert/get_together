@@ -9,40 +9,51 @@ class GroupsAndEvents extends StatefulWidget {
   @override
   State<GroupsAndEvents> createState() => _GroupsAndEventsState();
 }
-
+var user = '124';
 class _GroupsAndEventsState extends State<GroupsAndEvents> {
 
-  List<Widget> GroupsAndEventsListWidget(AsyncSnapshot snapshot){
-    return snapshot.data.docs.map<Widget>((docs){
-      return Container(
-        width: MediaQuery.of(context).size.width * 0.4,
-        height: MediaQuery.of(context).size.height,
-        child: Card(
-          elevation: 8,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
+  List<Widget> GroupsAndEventsListWidget(AsyncSnapshot snapshot) {
+    return snapshot.data.docs.map<Widget>((docs) {
+
+      String documentId = docs.id.toString();
+        return Container(
+          width: MediaQuery
+              .of(context)
+              .size
+              .width * 0.4,
+          height: MediaQuery
+              .of(context)
+              .size
+              .height,
+          child: Card(
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+             mainAxisAlignment: MainAxisAlignment.center ,
+            children:[
+
+
+              Text(docs['title'],),
+
+              TextButton(onPressed: () {
+                FirebaseFirestore.instance.collection('Events')
+                    .doc(documentId)
+                    .update({"JoinedUsers": FieldValue.arrayRemove([user])});
+              }, child: Text("Leave Event")),
+]
+            ),
           ),
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            children: [
-              ListTile(
-                title: Text(docs['title'],),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(25.0),
-                child: Text(docs['description'],),
-              )
-            ],
-          ),
-        ),
-      );
+        );
     }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('Events').orderBy('createdAt', descending: true).snapshots(),
+      stream: FirebaseFirestore.instance.collection('Events').where('JoinedUsers', arrayContains: user).snapshots(),
       builder: (context, AsyncSnapshot snapshot) {
         return Container(
                   width: MediaQuery.of(context).size.width,

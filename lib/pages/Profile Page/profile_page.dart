@@ -12,10 +12,21 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+bool isSelected = true;
+String groupOrEvent = "Events";
+
+
 
   @override
   Widget build(BuildContext context) {
-      return Scaffold(
+
+    if (isSelected == true){
+      groupOrEvent = "Events";
+    } else {
+      groupOrEvent = 'Groups';
+    }
+
+    return Scaffold(
         appBar: AppBar(
           leading: BackButton(),
           title: const Text('Profile'),
@@ -24,18 +35,39 @@ class _ProfileState extends State<Profile> {
             scrollDirection: Axis.vertical,
             children : [CircleAvatar(),
             Text("Name"),
-            ButtonBar(
-              children: [
-                TextButton(onPressed: () {}, child: Text("Events")),
-                TextButton(onPressed: () {}, child: Text("groups")),
-              ],
-            ),
-            Text("Events Joined"),
+              Container(child:
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+
+                    TextButton(onPressed: (){
+                      setState(() {
+                        isSelected = true;
+                      });
+                    }, child: Text("Events"),
+                      style: TextButton.styleFrom(backgroundColor:
+                      (isSelected) ? Colors.blue : null
+                      ),),
+
+                    TextButton(onPressed: (){
+                      setState(() {
+                        isSelected = false;
+                      });
+                    }, child: Text("Groups"),
+                      style: TextButton.styleFrom(backgroundColor:
+                      (isSelected) ? null : Colors.blue
+                      ),),
+
+
+                ],),
+
+              ),
+
+
+
+            Text("$groupOrEvent Joined"),
               GroupsAndEvents(),
-            Text("Events Created"),
-              GroupsAndEvents(),
-            Text("Events Drafted"),
-              GroupsAndEvents(),
+            Text("$groupOrEvent Leading"),
 ]
           ),
       );

@@ -8,13 +8,13 @@ import 'package:get_together/pages/Discover/make_or_edit_card.dart';
 import 'package:get_together/pages/Profile Page/profile_page.dart';
 
 
-  class GroupAndEventsCards extends StatefulWidget {
+  class EventsCards extends StatefulWidget {
 
   @override
-  State<GroupAndEventsCards> createState() => _GroupAndEventsCardsState();
+  State<EventsCards> createState() => _EventsCardsState();
   }
 
-  class _GroupAndEventsCardsState extends State<GroupAndEventsCards> {
+  class _EventsCardsState extends State<EventsCards> {
 
   List<Widget> eventsListWidget(AsyncSnapshot snapshot){
     return snapshot.data.docs.map<Widget>((docs) {
@@ -22,8 +22,16 @@ import 'package:get_together/pages/Profile Page/profile_page.dart';
       String user = "124";
       String resultUid = documentId.substring(0, documentId.indexOf('+'));
 
-      print(docs["JoinedUsers"]);
       List joined = docs["JoinedUsers"];
+      num list_length = joined.length;
+      num true_list_length = list_length-1;
+      String peopleHave_Or_personHas;
+      if(true_list_length == 1){
+        peopleHave_Or_personHas = "Person Has";
+      }else{
+        peopleHave_Or_personHas = "People Have";
+      }
+
 
       return Card(
         elevation: 8,
@@ -41,7 +49,15 @@ import 'package:get_together/pages/Profile Page/profile_page.dart';
               padding: const EdgeInsets.all(25.0),
               child: Text(docs['description'],),
             ),
-            //  final user = FirebaseAuth.instance.currentUser!.uid;
+
+              
+
+              
+              Padding(
+                padding: EdgeInsets.all(5),
+                child:Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child://  final user = FirebaseAuth.instance.currentUser!.uid;
      (user == resultUid) ?
                   TextButton(onPressed: (){
                     showCupertinoDialog(
@@ -71,7 +87,11 @@ import 'package:get_together/pages/Profile Page/profile_page.dart';
            FirebaseFirestore.instance.collection('Events')
                .doc(documentId)
                .update({"JoinedUsers": FieldValue.arrayRemove([user])});
-         }, child: Text("Joined")),
+         }, child: Text("Leave Event")),
+
+              ),
+      ),
+         Padding(padding: EdgeInsets.all(25), child: Text(true_list_length.toString()+" $peopleHave_Or_personHas Joined This Event"),),
 
 
 
