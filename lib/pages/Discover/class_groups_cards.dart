@@ -4,31 +4,31 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+import 'package:get_together/pages/Discover/Groups/group_application.dart';
 import 'package:get_together/pages/Discover/make_or_edit_events.dart';
 import 'package:get_together/pages/Profile Page/profile_page.dart';
 
 
-  class GroupsCards extends StatefulWidget {
+class GroupsCards extends StatefulWidget {
 
   @override
   State<GroupsCards> createState() => _GroupsCardsState();
-  }
+}
 
-  class _GroupsCardsState extends State<GroupsCards> {
+class _GroupsCardsState extends State<GroupsCards> {
 
   List<Widget> eventsListWidget(AsyncSnapshot snapshot){
     return snapshot.data.docs.map<Widget>((docs) {
+
       String documentId = docs.id.toString();
       String user = "124";
-      final answerOne = TextEditingController();
-      final answerTwo = TextEditingController();
-      final answerThree = TextEditingController();
-List requestedUsers = docs['requestedUsers'];
-
+      List requestedUsers = docs['requestedUsers'];
       List joined = docs["joinedUsers"];
       num list_length = joined.length;
       num true_list_length = list_length-1;
       String peopleHave_Or_personHas;
+
+
       if(true_list_length == 1){
         peopleHave_Or_personHas = "Person Has";
       }else{
@@ -36,128 +36,96 @@ List requestedUsers = docs['requestedUsers'];
       }
 
 
+    data(String addOrRemove, user){
+
+      FieldValue? myArray;
+
+      var documentReference = FirebaseFirestore.instance.collection('Groups').doc(documentId);
+      var arrayName = "joinedUsers";
+
+
+      if (addOrRemove == "remove") {
+      myArray = FieldValue.arrayRemove([user]);
+      documentReference.update({"$arrayName": myArray});
+      } else if (addOrRemove == "add") {
+      myArray = FieldValue.arrayUnion([user]);
+      documentReference.update({"$arrayName": myArray});
+      } else if (addOrRemove == 'delete') {
+      documentReference.delete();
+      } else if (addOrRemove == 'requested'){
+       documentReference.update({"$arrayName": FieldValue.arrayUnion([user])});
+      }
+      }
+
       return Card(
-        elevation: 8,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          children: [
-            ListTile(
-             title: Row(
-               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-               children:[
-               Text(docs['title']),
-               (docs["privacy"]) ? Row(children: [Text("Private Group (${docs['size']})"), Icon(Icons.lock), ],) : Row(children: [ Text("Public Group (${docs['size']})"), Icon(Icons.lock),],),
-             ],),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.all(25.0),
-              child: Text(docs['description'],),
-            ),
-
-
-              
-
-              
-              Padding(
-                padding: EdgeInsets.all(5),
-                child:Align(
-                alignment: AlignmentDirectional.centerEnd,
-                child://  final user = FirebaseAuth.instance.currentUser!.uid;
-    (joined.contains(user) == true) ?
-    TextButton(onPressed: () {
-      FirebaseFirestore.instance.collection('Groups')
-          .doc(documentId)
-          .update({"joinedUsers": FieldValue.arrayRemove([user])});
-    }, child: Text("Leave Group")) : (docs["privacy"] == false) ?
-      TextButton(onPressed: (){
-        FirebaseFirestore.instance.collection('Groups').doc(documentId).update({"joinedUsers": FieldValue.arrayUnion([user])});
-      }, child: Text("Join")) : (docs["application"] == true && requestedUsers.contains(user) == false) ?
-
-    TextButton(onPressed: (){
-      showCupertinoDialog(
-        context: context,
-        builder: (context) =>  AlertDialog(
-          title: Text("Please Answer The Questions"),
-          content: Column(children: [
-
-            Text("Question: ${docs["questionOne"]}"),
-
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child:
-              TextField(
-                controller: answerOne,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Response',
-                ),
-              ),
-            ),
-
-            Container(child: (docs["questionTwo"] == null || docs["questionTwo"]=='' ) ? null : Column( children:[  Text("Question: ${docs["questionTwo"]}"),   Padding(
-              padding: EdgeInsets.all(16.0),
-              child:
-              TextField(
-                controller: answerTwo,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Response',
-                ),
-              ),
-            ),], ),),
-            Container(child: (docs["questionThree"] == null || docs["questionThree"] == '' ) ? null : Column( children:[  Text("Question: ${docs["questionThree"]}"),   Padding(
-              padding: EdgeInsets.all(16.0),
-              child:
-              TextField(
-                controller: answerThree,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Response',
-                ),
-              ),
-            ),], ),),
-
-          ],),
-          actions: [
-            CupertinoDialogAction(child: Text("Submit"),
-              onPressed: (){
-                Map <String, dynamic> data = {
-                  'answerOne': answerOne.text,
-                  'answerTwo': answerTwo.text,
-                  'answerThree': answerThree.text,
-                };
-                FirebaseFirestore.instance.collection(docs['leader']).doc("Groups Led").collection(user).add(data);
-
-                FirebaseFirestore.instance.collection(user).doc("Groups Requested").collection(documentId).add(data);
-
-                FirebaseFirestore.instance.collection('Groups').doc(documentId).update({"requestedUsers": FieldValue.arrayUnion([user])});
-                Navigator.pop(context);
-              },
-            ),
-            CupertinoDialogAction(
-              child: Text("Cancel"), onPressed: (){Navigator.pop(context);},),
-          ],
-        ),
-      );
-
-    }, child: Text("Complete Group Application")) : (requestedUsers.contains(user) == true) ? Text("Request Sent"):  TextButton(onPressed: (){
-      FirebaseFirestore.instance.collection('Events').doc(documentId).update({"joinedUsers": FieldValue.arrayUnion([user])});
-    }, child: Text("Request"))
-
-
-
-                ),
+      elevation: 8,
+      shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10.0),
       ),
-         Padding(padding: EdgeInsets.all(25), child: Text(true_list_length.toString()+" $peopleHave_Or_personHas Joined This Event"),),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+      children: [
+      ListTile(
+      title: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children:[
+      Text(docs['title']),
+      (docs["privacy"]) ? Row(children: [Text("Private Group (${docs['size']})"), Icon(Icons.lock), ],) : Row(children: [ Text("Public Group (${docs['size']})"), Icon(Icons.lock),],),
+      ],),
+      ),
+
+      Padding(
+      padding: const EdgeInsets.all(25.0),
+      child: Text(docs['description'],),
+      ),
 
 
 
-          ],
-        ),
+
+
+      Padding(
+      padding: EdgeInsets.all(5),
+      child:Align(
+      alignment: AlignmentDirectional.centerEnd,
+      child: (joined.contains(user) == true)
+          ?
+      TextButton(onPressed: () {data("remove", user);}, child: Text("Leave Group"))
+          :
+      (docs["privacy"] == false)
+          ?
+      TextButton(onPressed: (){data('add', user);}, child: Text("Join"))
+          :
+      (docs["application"] == true && requestedUsers.contains(user) == false) ?
+
+      TextButton(onPressed: (){
+        showCupertinoDialog(
+            context: context,
+            builder: (context) =>
+                GroupApplication(
+                    documentId: documentId,
+                    questionOne: docs['questionOne'].toString(),
+                    questionTwo: docs['questionTwo'].toString(),
+                    questionThree: docs['questionThree'].toString(),
+                    leader: docs['leader'].toString(),
+                    userId: user
+                )
+        );}, child: Text("Complete Group Application"))
+          :
+      (requestedUsers.contains(user) == true) ?
+      Text("Request Sent")
+          :
+      TextButton(onPressed: (){data('requested', user);}, child: Text("Request"))
+
+
+
+      ),
+      ),
+      Padding(padding: EdgeInsets.all(25), child: Text(true_list_length.toString()+" $peopleHave_Or_personHas Joined This Event"),),
+
+
+
+      ],
+      ),
       );
     }).toList();
   }

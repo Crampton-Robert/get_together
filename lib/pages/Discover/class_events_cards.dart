@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+import 'package:get_together/Backend Logic/data_reference_logic.dart';
 import 'package:get_together/pages/Discover/make_or_edit_events.dart';
 import 'package:get_together/pages/Profile Page/profile_page.dart';
 
@@ -34,22 +35,22 @@ class _EventsCardsState extends State<EventsCards> {
         peopleHave_Or_personHas = "People Have";
       }
 
-      data(String addOrRemove, user){
+       data(String addOrRemove, user){
 
-        FieldValue? myArray;
-        var documentReference =  FirebaseFirestore.instance.collection('Events').doc(documentId);
-        var arrayName = "joinedUsers";
+      FieldValue? myArray;
+      var documentReference =  FirebaseFirestore.instance.collection('Events').doc(documentId);
+      var arrayName = "joinedUsers";
 
 
-        if (addOrRemove == "remove") {
-          myArray = FieldValue.arrayRemove([user]);
-          documentReference.update({"$arrayName": myArray});
-        } else if (addOrRemove == "add") {
-          myArray = FieldValue.arrayUnion([user]);
-          documentReference.update({"$arrayName": myArray});
-        } else if (addOrRemove == 'delete') {
-        documentReference.delete();
-        }
+      if (addOrRemove == "remove") {
+      myArray = FieldValue.arrayRemove([user]);
+      documentReference.update({"$arrayName": myArray});
+      } else if (addOrRemove == "add") {
+      myArray = FieldValue.arrayUnion([user]);
+      documentReference.update({"$arrayName": myArray});
+      } else if (addOrRemove == 'delete') {
+      documentReference.delete();
+      }
       }
 
 
