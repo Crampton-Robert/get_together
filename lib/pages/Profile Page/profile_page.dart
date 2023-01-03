@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
-import 'package:get_together/pages/Discover/make_or_edit_card.dart';
+import 'package:get_together/pages/Discover/make_or_edit_events.dart';
 import 'package:get_together/pages/Profile Page/profile_class_groups_and_events.dart';
 
 class Profile extends StatefulWidget {
@@ -66,7 +66,7 @@ String groupOrEvent = "Events";
 
 
             Text("$groupOrEvent Joined"),
-              GroupsAndEvents(),
+              GroupsAndEvents(groupsOrEvents: groupOrEvent,),
             Text("$groupOrEvent Leading"),
 ]
           ),

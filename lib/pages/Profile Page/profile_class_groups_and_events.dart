@@ -3,14 +3,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
-import 'package:get_together/pages/Discover/make_or_edit_card.dart';
+import 'package:get_together/pages/Discover/make_or_edit_events.dart';
 
 class GroupsAndEvents extends StatefulWidget {
+
+  final String groupsOrEvents;
+
+  GroupsAndEvents({Key? key, required this.groupsOrEvents}) : super(key: key);
+
+
   @override
   State<GroupsAndEvents> createState() => _GroupsAndEventsState();
 }
 var user = '124';
 class _GroupsAndEventsState extends State<GroupsAndEvents> {
+
+
 
   List<Widget> GroupsAndEventsListWidget(AsyncSnapshot snapshot) {
     return snapshot.data.docs.map<Widget>((docs) {
@@ -41,7 +49,7 @@ class _GroupsAndEventsState extends State<GroupsAndEvents> {
               TextButton(onPressed: () {
                 FirebaseFirestore.instance.collection('Events')
                     .doc(documentId)
-                    .update({"JoinedUsers": FieldValue.arrayRemove([user])});
+                    .update({"joinedUsers": FieldValue.arrayRemove([user])});
               }, child: Text("Leave Event")),
 ]
             ),
@@ -53,7 +61,7 @@ class _GroupsAndEventsState extends State<GroupsAndEvents> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('Events').where('JoinedUsers', arrayContains: user).snapshots(),
+      stream: FirebaseFirestore.instance.collection('${widget.groupsOrEvents}').where('joinedUsers', arrayContains: user).snapshots(),
       builder: (context, AsyncSnapshot snapshot) {
         return Container(
                   width: MediaQuery.of(context).size.width,
@@ -62,7 +70,7 @@ class _GroupsAndEventsState extends State<GroupsAndEvents> {
                   Center(child: CircularProgressIndicator())
                       :
                   (snapshot.data.docs.isEmpty) ?
-                  Center(child: Text('Join an Event'))
+                  Center(child: Text('Joined ${widget.groupsOrEvents} Will be Visible Here'))
                       :
                   ListView(
                     scrollDirection: Axis.horizontal,

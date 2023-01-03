@@ -4,7 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:get_together/pages/Discover/make_or_edit_card.dart';
+import 'package:get_together/pages/Discover/make_or_edit_events.dart';
 import 'package:get_together/pages/Profile Page/profile_page.dart';
 
 
