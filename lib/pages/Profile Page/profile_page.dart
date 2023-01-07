@@ -13,7 +13,8 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
 bool isSelected = true;
-String groupOrEvent = "Events";
+String groupOrEvent = "Event";
+var user = '124';
 
 
 
@@ -21,9 +22,9 @@ String groupOrEvent = "Events";
   Widget build(BuildContext context) {
 
     if (isSelected == true){
-      groupOrEvent = "Events";
+      groupOrEvent = "Event";
     } else {
-      groupOrEvent = 'Groups';
+      groupOrEvent = 'Group';
     }
 
     return Scaffold(
@@ -33,7 +34,9 @@ String groupOrEvent = "Events";
         ),
           body: ListView(
             scrollDirection: Axis.vertical,
-            children : [CircleAvatar(),
+            children : [
+
+              CircleAvatar(),
             Text("Name"),
               Container(child:
               Row(
@@ -66,8 +69,19 @@ String groupOrEvent = "Events";
 
 
             Text("$groupOrEvent Joined"),
-              GroupsAndEvents(groupsOrEvents: groupOrEvent,),
-            Text("$groupOrEvent Leading"),
+              GroupsAndEvents(groupsOrEvents: groupOrEvent, joinedOrCreated: 'Joined' , user: user),
+            Text("$groupOrEvent Created"),
+              GroupsAndEvents(groupsOrEvents: groupOrEvent, joinedOrCreated: 'Created', user: user),
+              Container(child:    (groupOrEvent == 'Group') ? Column(children:
+
+              [
+                Text("Requests Sent"),
+                GroupsAndEvents(groupsOrEvents: groupOrEvent, joinedOrCreated: 'Requested', user: user),
+
+              ]
+
+              ) : null
+              )
 ]
           ),
       );

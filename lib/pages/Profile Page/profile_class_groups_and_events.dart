@@ -8,19 +8,22 @@ import 'package:get_together/pages/Discover/make_or_edit_events.dart';
 class GroupsAndEvents extends StatefulWidget {
 
   final String groupsOrEvents;
+  final String joinedOrCreated;
+  final String user;
 
-  GroupsAndEvents({Key? key, required this.groupsOrEvents}) : super(key: key);
+  GroupsAndEvents({Key? key, required this.groupsOrEvents, required this.joinedOrCreated, required this.user}) : super(key: key);
 
 
   @override
   State<GroupsAndEvents> createState() => _GroupsAndEventsState();
 }
-var user = '124';
 class _GroupsAndEventsState extends State<GroupsAndEvents> {
 
 
 
   List<Widget> GroupsAndEventsListWidget(AsyncSnapshot snapshot) {
+
+   var user = widget.user;
     return snapshot.data.docs.map<Widget>((docs) {
 
       String documentId = docs.id.toString();
@@ -50,7 +53,7 @@ class _GroupsAndEventsState extends State<GroupsAndEvents> {
                 FirebaseFirestore.instance.collection('Events')
                     .doc(documentId)
                     .update({"joinedUsers": FieldValue.arrayRemove([user])});
-              }, child: Text("Leave Event")),
+              }, child: Text("Leave ${widget.groupsOrEvents}")),
 ]
             ),
           ),
@@ -60,24 +63,40 @@ class _GroupsAndEventsState extends State<GroupsAndEvents> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('${widget.groupsOrEvents}').where('joinedUsers', arrayContains: user).snapshots(),
-      builder: (context, AsyncSnapshot snapshot) {
-        return Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height*.25,
-                  child: (!snapshot.hasData)?
-                  Center(child: CircularProgressIndicator())
-                      :
-                  (snapshot.data.docs.isEmpty) ?
-                  Center(child: Text('Joined ${widget.groupsOrEvents} Will be Visible Here'))
-                      :
-                  ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: GroupsAndEventsListWidget(snapshot),
-                  ),
-                );
-      },
-    );
+    var user = widget.user;
+    var path = FirebaseFirestore.instance.collection('${widget.groupsOrEvents}s');
+var reference;
+
+    if(widget.joinedOrCreated == 'Joined'){
+      reference =  path.where('joinedUsers', arrayContains: user ).snapshots();
+    }else if(widget.joinedOrCreated == 'Requested'){
+      reference = path.where('requestedUsers', arrayContains: user).snapshots();
+    }else{
+      reference = path.where('createdBy', isEqualTo: user ).snapshots();
+    }
+
+      return StreamBuilder<QuerySnapshot>(
+        stream: reference,
+        builder: (context, AsyncSnapshot snapshot) {
+          return Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height*.25,
+            child:
+            (!snapshot.hasData)
+                ?
+            Center(child: CircularProgressIndicator())
+                :
+            (snapshot.data.docs.isEmpty)
+                ?
+            Center(child: Text('${widget.joinedOrCreated} ${widget.groupsOrEvents}s Will be Visible Here'))
+                :
+            ListView(
+            scrollDirection: Axis.horizontal,
+            children: GroupsAndEventsListWidget(snapshot),),
+          );
+        },
+      );
+
+
   }
 }

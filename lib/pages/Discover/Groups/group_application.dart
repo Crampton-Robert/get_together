@@ -9,14 +9,13 @@ import 'package:get_together/pages/Profile Page/profile_class_groups_and_events.
 
 class GroupApplication extends StatefulWidget {
 
-  final String documentId;
   final String questionOne;
   final String questionTwo;
   final String questionThree;
-  final String leader;
   final String userId;
+  final String documentId;
 
-  GroupApplication({Key? key, required this.userId, required this.documentId, required this.questionOne, required this.questionTwo, required this.questionThree, required this.leader}) : super(key: key);
+  GroupApplication({Key? key, required this.userId, required this.questionOne, required this.questionTwo, required this.questionThree, required this.documentId,}) : super(key: key);
 
   @override
   State<GroupApplication> createState() => _GroupApplicationState();
@@ -88,22 +87,12 @@ class _GroupApplicationState extends State<GroupApplication> {
         CupertinoDialogAction(child: Text("Submit"),
           onPressed: () {
             Map <String, dynamic> data = {
-              'answerOne': answerOne.text,
-              'answerTwo': answerTwo.text,
-              'answerThree': answerThree.text,
-            };
-            FirebaseFirestore.instance.collection(widget.leader)
-                .doc(
-                "Groups Led").collection(user)
-                .add(data);
 
-            FirebaseFirestore.instance.collection(user).doc(
-                "Groups Requested").collection(widget.documentId).add(
-                data);
+              'Applications': [user, answerOne.text, answerTwo.text, answerThree.text,  ]
+            };
 
             FirebaseFirestore.instance.collection('Groups').doc(
-                widget.documentId).update({"requestedUsers": FieldValue
-                .arrayUnion([user])});
+                widget.documentId).update(data);
             Navigator.pop(context);
           },
         ),

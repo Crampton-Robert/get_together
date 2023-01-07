@@ -51,7 +51,7 @@ class _EventsCardListState extends State<EventsCardList> {
                     isEventsSelected = true;
                   });
                 }, child: Text("Events"),
-                style: TextButton.styleFrom(backgroundColor: isEventsSelected ? Colors.lightBlue[800] : null),),
+                style: TextButton.styleFrom(backgroundColor: isEventsSelected ? Theme.of(context).colorScheme.secondary : null),),
                ),
                Expanded(child: TextButton(onPressed: (){
 
@@ -60,7 +60,7 @@ class _EventsCardListState extends State<EventsCardList> {
                       isEventsSelected = false;
                     });
                 }, child: Text("Groups"),
-                  style: TextButton.styleFrom(backgroundColor: isEventsSelected ?  null : Colors.lightBlue[800]),
+                  style: TextButton.styleFrom(backgroundColor: isEventsSelected ?  null : Theme.of(context).colorScheme.secondary),
                 ),
                ),
               ],),),
@@ -76,7 +76,7 @@ class _EventsCardListState extends State<EventsCardList> {
                 ),
               );
             },
-            backgroundColor: Colors.green,
+            backgroundColor: Theme.of(context).colorScheme.secondary,
             child: const Icon(Icons.navigation),
           ),
         );

@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get_together/Backend Logic/data_reference_logic.dart';
 import 'package:get_together/pages/Discover/make_or_edit_events.dart';
 import 'package:get_together/pages/Profile Page/profile_page.dart';
+import 'package:get_together/Objects/discover_card.dart';
 
 
 class EventsCards extends StatefulWidget {
@@ -24,6 +25,7 @@ class _EventsCardsState extends State<EventsCards> {
       String user = "124";
       String resultUid = documentId.substring(0, documentId.indexOf('+'));
       List joined = docs["joinedUsers"];
+
       num list_length = joined.length;
       num true_list_length = list_length-1;
       String peopleHave_Or_personHas;
@@ -55,13 +57,8 @@ class _EventsCardsState extends State<EventsCards> {
 
 
       //View
-      return Card(
-        elevation: 8,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
+      return DiscoverCard(
+        child:  Column(
           children: [
             ListTile(
               title: Text(docs['title'],),
@@ -111,7 +108,7 @@ class _EventsCardsState extends State<EventsCards> {
 
 
           ],
-        ),
+      ),
       );
     }).toList();
   }

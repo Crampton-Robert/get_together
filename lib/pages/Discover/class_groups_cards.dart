@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get_together/pages/Discover/Groups/group_application.dart';
 import 'package:get_together/pages/Discover/make_or_edit_events.dart';
 import 'package:get_together/pages/Profile Page/profile_page.dart';
-
+import 'package:get_together/Objects/discover_card.dart';
 
 class GroupsCards extends StatefulWidget {
 
@@ -53,79 +53,74 @@ class _GroupsCardsState extends State<GroupsCards> {
       } else if (addOrRemove == 'delete') {
       documentReference.delete();
       } else if (addOrRemove == 'requested'){
+        var arrayName = "requestedUsers";
        documentReference.update({"$arrayName": FieldValue.arrayUnion([user])});
       }
       }
 
-      return Card(
-      elevation: 8,
-      shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10.0),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-      children: [
-      ListTile(
-      title: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children:[
-      Text(docs['title']),
-      (docs["privacy"]) ? Row(children: [Text("Private Group (${docs['size']})"), Icon(Icons.lock), ],) : Row(children: [ Text("Public Group (${docs['size']})"), Icon(Icons.lock),],),
-      ],),
-      ),
+      return DiscoverCard(
+        child: Column(
+          children: [
+            ListTile(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children:[
+                  Text(docs['title']),
+                  (docs["privacy"]) ? Row(children: [Text("Private Group (${docs['size']})"), Icon(Icons.lock), ],) : Row(children: [ Text("Public Group (${docs['size']})"), Icon(Icons.lock),],),
+                ],),
+            ),
 
-      Padding(
-      padding: const EdgeInsets.all(25.0),
-      child: Text(docs['description'],),
-      ),
+            Padding(
+              padding: const EdgeInsets.all(25.0),
+              child: Text(docs['description'],),
+            ),
 
 
 
 
 
-      Padding(
-      padding: EdgeInsets.all(5),
-      child:Align(
-      alignment: AlignmentDirectional.centerEnd,
-      child: (joined.contains(user) == true)
-          ?
-      TextButton(onPressed: () {data("remove", user);}, child: Text("Leave Group"))
-          :
-      (docs["privacy"] == false)
-          ?
-      TextButton(onPressed: (){data('add', user);}, child: Text("Join"))
-          :
-      (docs["application"] == true && requestedUsers.contains(user) == false) ?
+            Padding(
+              padding: EdgeInsets.all(5),
+              child:Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: (joined.contains(user) == true)
+                      ?
+                  TextButton(onPressed: () {data("remove", user);}, child: Text("Leave Group"))
+                      :
+                  (docs["privacy"] == false)
+                      ?
+                  TextButton(onPressed: (){data('add', user);}, child: Text("Join"))
+                      :
+                  (docs["application"] == true && requestedUsers.contains(user) == false) ?
 
-      TextButton(onPressed: (){
-        showCupertinoDialog(
-            context: context,
-            builder: (context) =>
-                GroupApplication(
-                    documentId: documentId,
-                    questionOne: docs['questionOne'].toString(),
-                    questionTwo: docs['questionTwo'].toString(),
-                    questionThree: docs['questionThree'].toString(),
-                    leader: docs['leader'].toString(),
-                    userId: user
-                )
-        );}, child: Text("Complete Group Application"))
-          :
-      (requestedUsers.contains(user) == true) ?
-      Text("Request Sent")
-          :
-      TextButton(onPressed: (){data('requested', user);}, child: Text("Request"))
-
-
-
-      ),
-      ),
-      Padding(padding: EdgeInsets.all(25), child: Text(true_list_length.toString()+" $peopleHave_Or_personHas Joined This Event"),),
+                  TextButton(onPressed: (){
+                    showCupertinoDialog(
+                        context: context,
+                        builder: (context) =>
+                            GroupApplication(
+                              documentId: documentId,
+                                questionOne: docs['questionOne'].toString(),
+                                questionTwo: docs['questionTwo'].toString(),
+                                questionThree: docs['questionThree'].toString(),
+                                userId: user
+                            )
+                    );}, child: Text("Complete Group Application"))
+                      :
+                  (requestedUsers.contains(user) == true) ?
+                  Text("Request Sent")
+                      :
+                  TextButton(onPressed: (){data('requested', user);}, child: Text("Request"))
 
 
 
-      ],
-      ),
+              ),
+            ),
+            Padding(padding: EdgeInsets.all(25), child: Text(true_list_length.toString()+" $peopleHave_Or_personHas Joined This Event"),),
+
+
+
+          ],
+        ),
       );
     }).toList();
   }
